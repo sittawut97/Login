@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     const name = d.user?.thaiName || d.user?.username || 'ไม่ทราบชื่อ';
     return `• คุณ ${name} ถึงเวลาเข้าเวรแล้ว – ${d.detail}`;
   });
-  const message = `แจ้งเตือนเวรประจำวันที่ ${todayStrTH} \n${lines.join('\n')}`;
+  const message = `🔔 แจ้งเตือนเวรประจำวันที่ ${todayStrTH} 🔔 \n\n${lines.join('\n')}`;
 
   await pushLine(message);
 
