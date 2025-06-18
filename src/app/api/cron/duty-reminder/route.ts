@@ -45,9 +45,9 @@ export async function GET(req: NextRequest) {
   // build single message or send per duty
   const lines = duties.map((d) => {
     const name = d.user?.thaiName || d.user?.username || 'ไม่ทราบชื่อ';
-    return `• คุณ ${name} – ${d.detail}`;
+    return `• คุณ ${name} ถึงเวลาเข้าเวรแล้ว – ${d.detail}`;
   });
-  const message = `แจ้งเตือนเวรประจำวันที่ ${todayStr} เวลา 11:00\n${lines.join('\n')}`;
+  const message = `แจ้งเตือนเวรประจำวันที่ ${todayStr} เวลา 14:30\n${lines.join('\n')}`;
 
   await pushLine(message);
 
