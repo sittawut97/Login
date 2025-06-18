@@ -15,7 +15,7 @@ function authOr401(request: NextRequest) {
 // PUT /api/duties/[id]  (อัปเดตเวร)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Record<string, string> },
 ) {
   const payload = authOr401(request);
   if (!payload) {
@@ -48,7 +48,7 @@ export async function PUT(
 // DELETE /api/duties/[id] (ลบเวร)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Record<string, string> },
 ) {
   const payload = authOr401(request);
   if (!payload) {
