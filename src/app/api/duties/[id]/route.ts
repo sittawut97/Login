@@ -12,17 +12,23 @@ function authOr401(request: NextRequest) {
   return verifyToken(token);
 }
 
+// กำหนด Type สำหรับ params แยกต่างหากเพื่อความชัดเจน
+interface RouteParams {
+  id: string;
+}
+
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  // แก้ไขตรงนี้: params ถูกส่งเป็น argument แยกต่างหาก
+  // ไม่ได้อยู่ใน context object แล้ว (สำหรับ Next.js 15.3.3 ตาม Error Log)
+  { params }: { params: RouteParams } // <--- แก้ไขบรรทัดนี้
 ) {
-  const { params } = context;
   const payload = authOr401(request);
   if (!payload) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = params;
+  const { id } = params; // params ถูก Destructure มาจาก argument โดยตรงแล้ว
   const { date, detail } = await request.json();
 
   if (!date || !detail) {
@@ -47,15 +53,15 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  // แก้ไขตรงนี้เช่นกัน
+  { params }: { params: RouteParams } // <--- แก้ไขบรรทัดนี้
 ) {
-  const { params } = context;
   const payload = authOr401(request);
   if (!payload) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = params;
+  const { id } = params; // params ถูก Destructure มาจาก argument โดยตรงแล้ว
   const duty = await prisma.duty.findUnique({ where: { id } });
   if (!duty || duty.userId !== payload.id) {
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
@@ -64,4 +70,3 @@ export async function DELETE(
   await prisma.duty.delete({ where: { id } });
   return NextResponse.json({ message: 'Deleted' });
 }
-
