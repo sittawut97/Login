@@ -17,16 +17,14 @@ function authOr401(request: NextRequest) {
 
 export async function PUT(
   request: NextRequest,
-  // แก้ไขตรงนี้: Type ของ parameter ที่สองคือ { params: { id: string } } โดยตรง
-  // ไม่มีการ Destructure ซ้ำซ้อน และไม่ใช่ชื่อ context
-  { params }: { params: { id: string } } // <--- แก้ไขบรรทัดนี้
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const payload = authOr401(request);
   if (!payload) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = params; // ดึง id ออกมาจาก params
+  const { id } = await params;
   const { date, detail } = await request.json();
 
   if (!date || !detail) {
@@ -51,15 +49,14 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  // แก้ไขตรงนี้: Type ของ parameter ที่สองคือ { params: { id: string } } โดยตรง
-  { params }: { params: { id: string } } // <--- แก้ไขบรรทัดนี้
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const payload = authOr401(request);
   if (!payload) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = params; // ดึง id ออกมาจาก params
+  const { id } = await params;
   const duty = await prisma.duty.findUnique({ where: { id } });
   if (!duty || duty.userId !== payload.id) {
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
