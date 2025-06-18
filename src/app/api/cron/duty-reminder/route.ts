@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
   // build single message or send per duty
   const lines = duties.map((d) => {
     const name = d.user?.thaiName || d.user?.username || 'ไม่ทราบชื่อ';
-    return `• คุณ ${name} ถึงเวลาเข้าเวรแล้ว – ${d.detail}`;
+    return `📌 คุณ ${name} ถึงเวลาเข้าเวรแล้ว \n - ${d.detail}`;
   });
   const message = `🔔 แจ้งเตือนเวรประจำวันที่ ${todayStrTH} 🔔 \n\n${lines.join('\n')}`;
 
