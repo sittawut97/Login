@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="flex min-h-screen flex-col bg-gray-100">
       {/* Header */}
       <header className="fixed inset-x-0 top-0 z-20 flex h-16 items-center justify-between bg-white px-6 shadow">
-        <h1 className="text-xl font-bold text-gray-700">Dashboard</h1>
+        <h1 className="text-xl font-bold text-gray-700">ระบบจัดการเวร</h1>
         <div className="flex items-center gap-4">
           <span className="text-gray-700">สวัสดีคุณ {payload.thaiName || payload.email}</span>
           <a
