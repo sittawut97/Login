@@ -7,6 +7,7 @@ export interface JwtPayload {
   id: string;
   email: string;
   role: string;
+  thaiName?: string;
 }
 
 export function signToken(payload: JwtPayload) {

@@ -1,32 +1,49 @@
+// ------------------------------
+// หน้า Register ทำงานฝั่ง Client (ต้องมี 'use client')
+// ใช้ React Hook จัดการ state และเรียก API /api/register
+// ------------------------------
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+// useState : เก็บข้อมูลจากช่อง input
+// useRouter: พาไปหน้า /dashboard หลังสมัครสำเร็จ
 
 export default function RegisterPage() {
+  // สำหรับเปลี่ยนเส้นทางไปหน้าอื่น
   const router = useRouter();
+
+  // ------------------------------
+  // State ของฟอร์มสมัครสมาชิก
+  // ------------------------------
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [thaiName, setThaiName] = useState('');
+  const [email, setEmail]    = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError]    = useState('');
+  const [loading, setLoading]= useState(false);
 
+  // ฟังก์ชันที่ถูกเรียกเมื่อผู้ใช้กดปุ่ม Sign Up
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault(); // ป้องกัน reload
+    setLoading(true); // disable ปุ่มระหว่างส่งข้อมูล
+    setError('');   // ล้าง error เก่า
 
+    // เรียก API สมัครสมาชิก ส่งข้อมูลใน body
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, email, password, thaiName }),
     });
 
+    // ------------------------------
+    // ตรวจผลลัพธ์จาก API
+    // ------------------------------
     if (res.ok) {
-      router.push('/dashboard');
+      router.push('/dashboard'); // ไป Dashboard (เพราะ cookie ถูกตั้งแล้ว)
     } else {
       const data = await res.json();
-      setError(data.message || 'Registration failed');
+      setError(data.message || 'Registration failed'); // แสดงข้อความผิดพลาด
       setLoading(false);
     }
   };
@@ -52,6 +69,20 @@ export default function RegisterPage() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            className="w-full rounded border px-3 py-2"
+            required
+          />
+        </div>
+        {/* Thai name */}
+        <div className="mb-4">
+          <label className="mb-2 block text-sm font-bold" htmlFor="thaiName">
+            ชื่อ-นามสกุล (ภาษาไทย)
+          </label>
+          <input
+            id="thaiName"
+            type="text"
+            value={thaiName}
+            onChange={(e) => setThaiName(e.target.value)}
             className="w-full rounded border px-3 py-2"
             required
           />
