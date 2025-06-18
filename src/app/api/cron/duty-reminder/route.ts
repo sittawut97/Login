@@ -19,6 +19,12 @@ export async function GET(req: NextRequest) {
   const mm = String(now.getMonth() + 1).padStart(2, '0');
   const dd = String(now.getDate()).padStart(2, '0');
   const todayStr = `${yyyy}-${mm}-${dd}`;
+  // แปลงเป็นวันที่รูปแบบไทย เช่น 18 มิถุนายน 2568
+  const todayStrTH = now.toLocaleDateString('th-TH', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 
   // get all duties scheduled for today
   const duties = await prisma.duty.findMany({
@@ -47,7 +53,7 @@ export async function GET(req: NextRequest) {
     const name = d.user?.thaiName || d.user?.username || 'ไม่ทราบชื่อ';
     return `• คุณ ${name} ถึงเวลาเข้าเวรแล้ว – ${d.detail}`;
   });
-  const message = `แจ้งเตือนเวรประจำวันที่ ${todayStr} เวลา 14:30\n${lines.join('\n')}`;
+  const message = `แจ้งเตือนเวรประจำวันที่ ${todayStrTH} เวลา 18:15\n${lines.join('\n')}`;
 
   await pushLine(message);
 
