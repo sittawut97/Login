@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
@@ -13,7 +13,7 @@ async function authOr401() {
 }
 
 // PUT /api/duties/[id]
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Record<string, string | string[]> }) {
   const payload = await authOr401();
   if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
@@ -29,14 +29,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE /api/duties/[id]
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Record<string, string | string[]> }) {
   const payload = await authOr401();
   if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   const { id } = params;
-  const duty = await prisma.duty.findUnique({ where: { id } });
+  const duty = await prisma.duty.findUnique({ where: { id: id as string | undefined } });
   if (!duty || duty.userId !== payload.id) return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
 
-  await prisma.duty.delete({ where: { id } });
+  await prisma.duty.delete({ where: { id: id as string | undefined } });
   return NextResponse.json({ message: 'Deleted' });
 }
